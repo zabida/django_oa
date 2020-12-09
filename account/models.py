@@ -95,6 +95,9 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'id'
     objects = UserManager()
 
+    def __str__(self):
+        return '<account> {}'.format(self.pk)
+
     class Meta:
         db_table = 'user'
         ordering = ('-created_at',)
