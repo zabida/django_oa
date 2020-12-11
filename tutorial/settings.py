@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'snippets.apps.SnippetsConfig',
     'account.apps.AccountConfig',
+    'snippetsdemo.apps.SnippetsdemoConfig',
 ]
 
 MIDDLEWARE = [
@@ -87,8 +88,8 @@ DATABASES = {
         'NAME': 'drf',
         'USER': 'root',
         'PASSWORD': '123456',
-        # 'HOST': '192.168.220.128',
-        'HOST': '192.168.19.131',
+        'HOST': '192.168.220.128',
+        # 'HOST': '192.168.19.131',
         'PORT': '3306',
     }
 }
