@@ -12,9 +12,20 @@ class Person(models.Model):
     age = models.CharField(max_length=3)
     sex = models.CharField(max_length=2, choices=SEX_CHOICES)
     address = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'person'
+        ordering = ('-updated_at', )
 
 
 class Post(models.Model):
     name = models.CharField(max_length=100)
     content = models.CharField(max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'post'
+        ordering = ('-updated_at', )
