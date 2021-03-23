@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     # 'polls.apps.PollsConfig', # 两种写法，下面是简写
     'polls',
     'apps.public_models',
+    'rest_framework',
+    'snippets',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +131,44 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '{}'.format(os.path.join(BASE_DIR, 'logs', 'info.log')),
+            'formatter': 'verbose'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+
+# ================= REST_FRAMEWORK  =======================
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'oa_admin.utils.exception.exception_handler'
+}
