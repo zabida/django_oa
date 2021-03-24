@@ -170,5 +170,5 @@ LOGGING = {
 
 # ================= REST_FRAMEWORK  =======================
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'oa_admin.utils.exception.exception_handler'
+    'EXCEPTION_HANDLER': 'oa_admin.customer.exception.exception_handler'
 }

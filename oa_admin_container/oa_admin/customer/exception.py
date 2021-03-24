@@ -50,4 +50,5 @@ def exception_handler(exc, context):
         data = {'msg': 'Permission denied.'}
         return Response(data, status=status.HTTP_403_FORBIDDEN)
     else:
+        logger.error(exc)
         return Response({'msg': '内部错误'}, status=status.HTTP_501_NOT_IMPLEMENTED)

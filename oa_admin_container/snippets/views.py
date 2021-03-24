@@ -3,10 +3,14 @@ from django.http import Http404
 
 # Create your views here.
 from rest_framework import status, mixins, generics, viewsets
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import views
 
+from oa_admin.customer.authentication import MyAuthentication
+from oa_admin.customer.permission import BlacklistPermission
 from snippets.models import Snippet
 from snippets.serializers import SnippetSerializer
 
@@ -23,7 +27,7 @@ def snippet_detail(request, pk):
     return Response('func bse detail {}'.format(pk))
 
 
-class SnippetList(APIView):
+class SnippetList(views.APIView):
     def get(self, request, format=None):
         snippets = Snippet.objects.all()
         serializer = SnippetSerializer(snippets, many=True)
@@ -37,7 +41,7 @@ class SnippetList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SnippetDetail(APIView):
+class SnippetDetail(views.APIView):
     """
     Retrieve, update or delete a snippet instance.
     """
@@ -71,6 +75,8 @@ class SnippetListMi(mixins.ListModelMixin,
                     generics.GenericAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    authentication_classes = [MyAuthentication]
+    permission_classes = [BlacklistPermission]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
