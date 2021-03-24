@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.public_models',
     'rest_framework',
     'snippets',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

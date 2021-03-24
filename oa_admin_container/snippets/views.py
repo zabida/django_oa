@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django_filters.rest_framework import DjangoFilterBackend
 
-# Create your views here.
 from rest_framework import status, mixins, generics, viewsets
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view
@@ -77,6 +77,8 @@ class SnippetListMi(mixins.ListModelMixin,
     serializer_class = SnippetSerializer
     authentication_classes = [MyAuthentication]
     permission_classes = [BlacklistPermission]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['code', 'title']
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -105,6 +107,7 @@ class SnippetDetailMi(mixins.RetrieveModelMixin,
 class SnippetListG(generics.ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+    filter_backends = [DjangoFilterBackend]
 
 
 class SnippetDetailG(generics.RetrieveUpdateDestroyAPIView):
