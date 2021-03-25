@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from pygments.lexers import get_all_lexers
 from pygments.styles import get_all_styles
@@ -18,3 +19,9 @@ class Snippet(models.Model):
 
     class Meta:
         ordering = ['created']
+
+
+class UserToken(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    token = models.CharField(max_length=64, blank=True, default='')
+    user = models.ForeignKey(User, related_name='user_token_user', on_delete=models.CASCADE)

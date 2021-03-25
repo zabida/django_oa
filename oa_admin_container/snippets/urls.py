@@ -17,6 +17,9 @@ urlpatterns = [
     path('snippets/g/<int:pk>/', views.SnippetDetailG.as_view()),
 
     path('snippets/v1/', views.SnippetViewSet.as_view({'get': 'list'})),
+
+    path('user_token/g/', views.UserTokenListG.as_view()),
+    path('user_token/g/<int:pk>/', views.UserTokenDetailG.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

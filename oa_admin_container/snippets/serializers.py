@@ -1,6 +1,8 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
+from oa_admin.customer import errors
 
-from snippets.models import LANGUAGE_CHOICES, STYLE_CHOICES, Snippet
+from snippets.models import LANGUAGE_CHOICES, STYLE_CHOICES, Snippet, UserToken
 
 
 class SnippetSerializer(serializers.Serializer):
@@ -28,3 +30,25 @@ class SnippetSerializer(serializers.Serializer):
         instance.style = validated_data.get('style', instance.style)
         instance.save()
         return instance
+
+
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.CharField()
+
+
+class UserTokenSerializer(serializers.Serializer):
+    user = UserSerializer(read_only=True)
+    user_id = serializers.IntegerField(write_only=True)
+    token = serializers.CharField()
+    created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+
+    def create(self, validated_data):
+        user = User.objects.filter(id=validated_data.get('user_id')).first()
+        if not user:
+            raise errors.raise_validation_error('未找到user')
+
+        validated_data['user'] = user
+        user_token = UserToken(**validated_data)
+        user_token.save()
+        return user_token
