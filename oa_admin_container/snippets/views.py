@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import status, mixins, generics, viewsets
+from rest_framework import status, mixins, generics, viewsets, pagination, filters
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
@@ -10,9 +10,10 @@ from rest_framework.response import Response
 from rest_framework import views
 
 from oa_admin.customer.authentication import MyAuthentication
+from oa_admin.customer.pagination import SimpleLimitOffsetPagination
 from oa_admin.customer.permission import BlacklistPermission
-from snippets.models import Snippet
-from snippets.serializers import SnippetSerializer
+from snippets.models import Snippet, UserToken
+from snippets.serializers import SnippetSerializer, UserTokenSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -108,6 +109,7 @@ class SnippetListG(generics.ListCreateAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
     filter_backends = [DjangoFilterBackend]
+    pagination_class = SimpleLimitOffsetPagination
 
 
 class SnippetDetailG(generics.RetrieveUpdateDestroyAPIView):
@@ -118,3 +120,21 @@ class SnippetDetailG(generics.RetrieveUpdateDestroyAPIView):
 class SnippetViewSet(viewsets.ModelViewSet):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+
+
+class UserTokenListG(generics.ListCreateAPIView):
+    queryset = UserToken.objects.all()
+    serializer_class = UserTokenSerializer
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
+    filterset_fields = ['token', 'id']
+    pagination_class = SimpleLimitOffsetPagination
+    search_fields = ['token', 'user__email']
+    ordering_fields = ['token', 'created_at']
+
+    # def list(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.query_params)
+
+
+class UserTokenDetailG(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserToken.objects.all()
+    serializer_class = UserTokenSerializer

@@ -1,5 +1,5 @@
 import logging
-
+import traceback
 from django.http import Http404
 from django.utils.encoding import force_text
 from rest_framework.exceptions import PermissionDenied, APIException
