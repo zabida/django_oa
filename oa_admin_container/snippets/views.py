@@ -1,4 +1,7 @@
+import time
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Max
 from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -46,6 +49,7 @@ class SnippetDetail(views.APIView):
     """
     Retrieve, update or delete a snippet instance.
     """
+
     def get_object(self, pk):
         try:
             return Snippet.objects.get(pk=pk)
@@ -124,15 +128,27 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
 class UserTokenListG(generics.ListCreateAPIView):
     queryset = UserToken.objects.all()
+    authentication_classes = [BasicAuthentication]
     serializer_class = UserTokenSerializer
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
-    filterset_fields = ['token', 'id']
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ['status']
     pagination_class = SimpleLimitOffsetPagination
     search_fields = ['token', 'user__email']
     ordering_fields = ['token', 'created_at']
 
-    # def list(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.query_params)
+    def list(self, request, *args, **kwargs):
+        # 初步筛选查找过滤
+        queryset = self.filter_queryset(self.get_queryset())
+        # 进一步聚合查询, 生成聚合表
+        queryset = queryset.values('user').annotate(effective_date=Max('effective_date'),
+                                                    expire_date=Max('expire_date'),
+                                                    created_at=Max('created_at'), id=Max('id')).order_by('id')
+        # 排序
+        queryset = filters.OrderingFilter().filter_queryset(self.request, queryset, self)
+        # 分页
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class UserTokenDetailG(generics.RetrieveUpdateDestroyAPIView):

@@ -1,8 +1,8 @@
-from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 from oa_admin.customer import errors
 
-from snippets.models import LANGUAGE_CHOICES, STYLE_CHOICES, Snippet, UserToken
+from snippets.models import LANGUAGE_CHOICES, STYLE_CHOICES, Snippet, UserToken, User
 
 
 class SnippetSerializer(serializers.Serializer):
@@ -38,10 +38,18 @@ class UserSerializer(serializers.Serializer):
 
 
 class UserTokenSerializer(serializers.Serializer):
-    user = UserSerializer(read_only=True)
+    # user = UserSerializer(read_only=True)
+    user = serializers.SerializerMethodField(read_only=True)
     user_id = serializers.IntegerField(write_only=True)
-    token = serializers.CharField()
     created_at = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', read_only=True)
+    effective_date = serializers.DateField(format='%Y-%m-%d', read_only=True)
+
+    def get_user(self, obj):
+        try:
+            user = User.objects.get(id=obj.get('user'))
+        except ObjectDoesNotExist:
+            return {}
+        return {'username': user.username, 'id': user.id}
 
     def create(self, validated_data):
         user = User.objects.filter(id=validated_data.get('user_id')).first()

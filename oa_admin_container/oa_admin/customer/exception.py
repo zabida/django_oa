@@ -24,6 +24,7 @@ class _ServerError(APIException):
 
 
 def exception_handler(exc, context):
+    traceback.print_exc()
     if isinstance(exc, exceptions.AuthenticationFailed) or isinstance(exc, exceptions.NotAuthenticated):
         data = {'msg': 'Authenticate failed'}
         return Response(data, status=status.HTTP_401_UNAUTHORIZED)
