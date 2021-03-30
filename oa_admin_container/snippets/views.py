@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import views
 
-from oa_admin.customer.authentication import MyAuthentication
+from oa_admin.customer.authentication import SimpleJWTAuthentication
 from oa_admin.customer.pagination import SimpleLimitOffsetPagination
 from oa_admin.customer.permission import BlacklistPermission
 from snippets.models import Snippet, UserToken
@@ -80,7 +80,7 @@ class SnippetListMi(mixins.ListModelMixin,
                     generics.GenericAPIView):
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
-    authentication_classes = [MyAuthentication]
+    authentication_classes = [SimpleJWTAuthentication]
     permission_classes = [BlacklistPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['code', 'title']
@@ -128,7 +128,8 @@ class SnippetViewSet(viewsets.ModelViewSet):
 
 class UserTokenListG(generics.ListCreateAPIView):
     queryset = UserToken.objects.all()
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SimpleJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserTokenSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_fields = ['status']

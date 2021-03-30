@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
+from rest_framework_jwt.views import obtain_jwt_token
 
 from snippets.urls import router as snippets_router
 
@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/', include('apps.my_funny.urls')),
     path('main/', include('snippets.urls')),
+    path('authen/', include('account.urls')),
     url(r'main/', include(snippets_router.urls)),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
 ]
