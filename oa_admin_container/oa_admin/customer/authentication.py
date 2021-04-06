@@ -1,3 +1,5 @@
+import datetime
+
 import jwt
 from django.contrib.auth import get_user_model
 from django.utils.encoding import smart_text
@@ -71,20 +73,21 @@ class MyAuthentication(BasicAuthentication):
 
 class SimpleJWTAuthentication(JSONWebTokenAuthentication):
     """重写authenticate_credentials，其他一致"""
+
     def authenticate_credentials(self, payload):
         User = get_user_model()
         user_id = payload.get('user_id', '')
-        version_number = payload.get('version_number', '')
+        exp = payload.get('exp', 1500000000)
 
         if not user_id:
             raise raise_authentication_error(msg='非法操作!')
 
         try:
             user = User.objects.get(id=user_id)
-            # if user.version_number != version_number:
-            #     raise raise_authentication_error(msg='token已过期')
             if user.is_active:
                 raise raise_authentication_error(msg='您的账户已冻结')
+            if datetime.datetime.fromtimestamp(int(exp)) < datetime.datetime.now():
+                raise raise_authentication_error(msg='token已过期')
         except User.DoesNotExist:
             raise raise_authentication_error(msg='非法操作')
 

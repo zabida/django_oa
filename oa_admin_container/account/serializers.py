@@ -1,8 +1,11 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserManager
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datetime_safe import datetime
 from rest_framework import serializers
 from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt.utils import jwt_encode_handler
+
+from oa_admin.customer import errors
 
 
 class LoginSerializer(serializers.Serializer):
@@ -15,11 +18,11 @@ class LoginSerializer(serializers.Serializer):
         username, password = self.validated_data.get('username'), self.validated_data.get('password')
         try:
             user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Exception('不存在')
+        except ObjectDoesNotExist:
+            raise errors.raise_validation_error('用户不存在')
 
         if not user.check_password(password):
-            raise Exception('密码不正确')
+            raise errors.raise_validation_error('密码不正确')
 
         payload = {
             'user_id': user.id,
@@ -30,3 +33,18 @@ class LoginSerializer(serializers.Serializer):
         }
         return data
 
+
+class RegisterSerializer(serializers.Serializer):
+
+    username = serializers.CharField(required=True, write_only=True)
+    password = serializers.CharField(required=True, write_only=True)
+    email = serializers.EmailField(required=True, write_only=True)
+
+    def save(self, **kwargs):
+        user_data = self.validated_data
+        username = user_data.get('username')
+        if User.objects.filter(username=username).first():
+            raise errors.raise_validation_error('用户名已存在')
+        else:
+            User.objects.create_superuser(**user_data)
+        return {'msg': '创建成功'}

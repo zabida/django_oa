@@ -24,7 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('polls/', include('apps.my_funny.urls')),
     path('main/', include('snippets.urls')),
-    path('authen/', include('account.urls')),
+    path('account/', include('account.urls')),
+    path('job/', include('job.urls')),
     url(r'main/', include(snippets_router.urls)),
 
 ]

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'snippets',
     'django_filters',
+    'job'
 ]
 
 MIDDLEWARE = [
