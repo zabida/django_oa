@@ -2,6 +2,7 @@ from django.db import models
 
 
 class JobStatistics(models.Model):
+    statistics_time = models.DateTimeField(auto_now_add=True)
     job_id = models.CharField(max_length=64)
     dem_id = models.CharField(max_length=12)
     sup_id = models.CharField(max_length=12)

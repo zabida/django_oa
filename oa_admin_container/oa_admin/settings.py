@@ -170,7 +170,7 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'oa_admin.customer.exception.exception_handler',
     # 'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_jwt.authentication.JWTAuthentication',),
     'DEFAULT_AUTHENTICATION_CLASSES': ('oa_admin.customer.authentication.SimpleJWTAuthentication',),
-
+    'PAGE_SIZE': 10,
 }
 
 JWT_AUTH = {
@@ -178,5 +178,5 @@ JWT_AUTH = {
     'JWT_DECODE_HANDLER': 'rest_framework_jwt.utils.jwt_decode_handler',
     'JWT_PAYLOAD_HANDLER': 'rest_framework_jwt.utils.jwt_payload_handler',
     'JWT_AUTH_HEADER_PREFIX': 'Token',
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=7 * 24)
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1 * 24)
 }
