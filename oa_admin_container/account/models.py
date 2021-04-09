@@ -19,6 +19,9 @@ class Role(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = 'role'
+
 
 class RolePermission(models.Model):
     role_id = models.IntegerField()
