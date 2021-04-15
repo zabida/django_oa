@@ -76,21 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'oa_admin.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'USER': 'root',
-        'PASSWORD': '123456',
-        'NAME': 'oa_admin',
-        'HOST': '8.129.121.170',
-        'PORT': '13307',
-        'ATOMIC_REQUESTS': True,
-        'CONN_MAX_AGE': 60,
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -180,3 +165,12 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'Token',
     'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1 * 24)
 }
+
+
+env = os.environ.get('oa_env')
+if env == 'test':
+    from oa_admin.settings_test import *
+elif env == 'prod':
+    from oa_admin.settings_prod import *
+else:
+    pass
