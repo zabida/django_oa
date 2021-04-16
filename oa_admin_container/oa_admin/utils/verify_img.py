@@ -64,7 +64,7 @@ class CodeImg:
         draw = ImageDraw.Draw(image)
 
         # 获取一个font字体对象参数是ttf的字体文件的目录，以及字体的大小
-        font = ImageFont.truetype(os.path.join(settings.FONTS_DIR, 'STXINGKA.TTF'), size=self.font_size)
+        font = ImageFont.truetype(os.path.join(settings.FRONT_DIR, 'STXINGKA.TTF'), size=self.font_size)
 
         temp = list()
         for i in range(self.code_count):

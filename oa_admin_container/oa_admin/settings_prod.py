@@ -13,3 +13,5 @@ DATABASES = {
         'CONN_MAX_AGE': 60,
     }
 }
+
+CODE_TIMEOUT = 60

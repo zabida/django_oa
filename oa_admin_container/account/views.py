@@ -1,12 +1,14 @@
-from django.contrib.auth.models import User
-from django.shortcuts import render
-
-# Create your views here.
+import base64
+import threading
+import uuid
+from django.core.cache import cache
+from django.conf import settings
 from rest_framework import generics
 from rest_framework.response import Response
 
 from account.serializers import LoginSerializer, RegisterSerializer
 from oa_admin.utils.verify_code import code_check
+from oa_admin.utils.verify_img import CodeImg
 
 
 class Authentication(generics.ListCreateAPIView):
@@ -33,7 +35,16 @@ class Register(generics.ListCreateAPIView):
 
 
 class Code(generics.ListCreateAPIView):
-    http_method_names = ['post', 'put']
+    http_method_names = ['get']
 
-    def create(self, request, *args, **kwargs):
-        pass
+    def list(self, request, *args, **kwargs):
+        img_id = uuid.uuid4()
+        code_img = CodeImg()
+        img, code = code_img.get_valid_code_img()
+        cache.set(img_id, code, timeout=settings.CODE_TIMEOUT)
+        _ret = {
+            'img': base64.b64encode(img),
+            'img_uuid': img_id
+        }
+        threading.Thread()
+        return Response(data=_ret)

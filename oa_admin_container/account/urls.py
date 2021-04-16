@@ -8,6 +8,7 @@ urlpatterns = [
 
     path('authentication/g/', views.Authentication.as_view()),
     path('register/g/', views.Register.as_view()),
+    path('code/g/', views.Code.as_view()),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

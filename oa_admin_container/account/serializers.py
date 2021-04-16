@@ -36,12 +36,16 @@ class LoginSerializer(serializers.Serializer):
 
 class RegisterSerializer(serializers.Serializer):
 
+    type = serializers.CharField(required=True, write_only=True)
     username = serializers.CharField(required=True, write_only=True)
     password = serializers.CharField(required=True, write_only=True)
     email = serializers.EmailField(required=True, write_only=True)
 
     def save(self, **kwargs):
         user_data = self.validated_data
+        type_ = user_data.get('type')
+        if type_ == '1':
+            pass
         username = user_data.get('username')
         if User.objects.filter(username=username).first():
             raise errors.raise_validation_error('用户名已存在')

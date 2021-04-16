@@ -20,9 +20,11 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://8.129.121.170:5002/1",
+        "LOCATION": "redis://8.129.121.170:5002/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }
+
+CODE_TIMEOUT = 60
